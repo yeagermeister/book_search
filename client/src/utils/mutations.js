@@ -10,6 +10,7 @@ export const ADD_USER = gql`
     }
   }
 `;
+
 export const LOGIN_USER = gql`
   mutation login($email: String!, $password: String!) {
   login(email: $email, password: $password) {
@@ -35,16 +36,11 @@ mutation AddSavedBook($userId: ID!, $book: BookInput!) {
 `;
 
 export const REMOVE_BOOK = gql`
-  mutation RemoveBook($bookId: String!) {
-    removeBook(bookId: $bookId) {
-      _id
+  mutation RemoveBook($userId: ID!, $book: BookDelete!) {
+    deleteSavedBook(userId: $userId, book: $book) {
       username
-      email
       savedBooks {
-        authors
         bookId
-        image
-        title
       }
     }
   }
@@ -56,5 +52,9 @@ export const REMOVE_BOOK = gql`
     image: String
     link: String
     title: String!
+  }
+
+  input BookDelete {
+    bookId: String!
   }
 `;

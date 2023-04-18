@@ -8,7 +8,7 @@ const { signToken } = require('../utils/auth');
 const resolvers = {
   Query: {
     getUserById: async (parent, { id }) => {
-      const user = await User.findById(id).populate('savedBooks');
+      const user = await User.findOne(id).populate('savedBooks');
       return user;
     },
     // other queries you want to define
@@ -20,9 +20,9 @@ const resolvers = {
       return { token, user };
     },
     addSavedBook: async (_, { userId, book }, context) => {
-            // if (!context.user) {
-      //   throw new AuthenticationError('You must be logged in to delete a saved book.');
-      // }
+      if (!context.user) {
+        throw new AuthenticationError('You must be logged in to delete a saved book.');
+      }
       try {
         // Find the user by userId
         const user = await User.findById(userId);
@@ -43,9 +43,9 @@ const resolvers = {
       }
     },
     deleteSavedBook: async (parent, { userId, book }, context) => {
-      // if (!context.user) {
-      //   throw new AuthenticationError('You must be logged in to delete a saved book.');
-      // }
+      if (!context.user) {
+        throw new AuthenticationError('You must be logged in to delete a saved book.');
+      }
       const user = await User.findById(userId);
       console.log(userId, "test", book)
       user.savedBooks.pull({ book });
@@ -70,12 +70,5 @@ const resolvers = {
       return { token, user };
     },
   },
-  // User: {
-  //   savedBooks: async (parent) => {
-  //     const books = await User.find({ _id: { $in: parent.savedBooks } });
-  //     return books;
-  //   },
-  // },
-  // other resolvers you want to define
 };
 module.exports = resolvers;
