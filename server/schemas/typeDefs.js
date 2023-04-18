@@ -1,5 +1,4 @@
 const { gql } = require('apollo-server-express');
-
 const typeDefs = gql`
   type User {
     _id: ID!
@@ -19,8 +18,7 @@ const typeDefs = gql`
   }
 
   type Query {
-    getUserById(id: ID!): User
-    # other queries you want to define
+    getUserById(_id: ID!): User
   }
 
   type Mutation {
@@ -28,7 +26,6 @@ const typeDefs = gql`
     addSavedBook(book: BookInput!): User
     deleteSavedBook(bookId: String!): User
     loginUser(email: String!, password: String!): Token
-    # other mutations you want to define
   }
 
   input BookInput {
@@ -46,10 +43,6 @@ const typeDefs = gql`
   type AuthPayload {
     user: User!
     token: String!
-  }
-
-  type Subscription {
-    # define your subscription types here
   }
 `;
 

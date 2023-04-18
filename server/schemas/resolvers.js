@@ -1,8 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { User, Book } = require('./models');
+const { User, Book } = require('../models');
 const { AuthenticationError } = require('apollo-server-express');
-
 const resolvers = {
   Query: {
     getUserById: async (parent, { id }) => {
@@ -11,7 +10,6 @@ const resolvers = {
     },
     // other queries you want to define
   },
-
   Mutation: {
     addUser: async (parent, { username, email, password }) => {
       const hash = await bcrypt.hash(password, 10);
@@ -55,15 +53,12 @@ const resolvers = {
     },
     // other mutations you want to define
   },
-
   User: {
     savedBooks: async (parent) => {
       const books = await Book.find({ _id: { $in: parent.savedBooks } });
       return books;
     },
   },
-
   // other resolvers you want to define
 };
-
 module.exports = resolvers;
