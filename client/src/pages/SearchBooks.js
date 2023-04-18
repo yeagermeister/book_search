@@ -9,8 +9,12 @@ import {
 } from 'react-bootstrap';
 
 import Auth from '../utils/auth';
-import { saveBook, searchGoogleBooks } from '../utils/API';
+import { searchGoogleBooks } from '../utils/API';
 import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
+
+import { useMutation } from '@apollo/client';
+import { ADD_BOOK } from '../utils/mutations';
+
 
 const SearchBooks = () => {
   // create state for holding returned google api data
@@ -26,6 +30,8 @@ const SearchBooks = () => {
   useEffect(() => {
     return () => saveBookIds(savedBookIds);
   });
+
+  const [saveBook, {error, data}] = useMutation(ADD_BOOK);
 
   // create method to search for books and set state on form submit
   const handleFormSubmit = async (event) => {
@@ -43,7 +49,7 @@ const SearchBooks = () => {
       }
 
       const { items } = await response.json();
-
+console.log("Items",items);
       const bookData = items.map((book) => ({
         bookId: book.id,
         authors: book.volumeInfo.authors || ['No author to display'],
@@ -51,6 +57,7 @@ const SearchBooks = () => {
         description: book.volumeInfo.description,
         image: book.volumeInfo.imageLinks?.thumbnail || '',
       }));
+      console.log("BoookData:", bookData);
 
       setSearchedBooks(bookData);
       setSearchInput('');
@@ -67,6 +74,7 @@ const SearchBooks = () => {
     // get token
     const token = Auth.loggedIn() ? Auth.getToken() : null;
 
+    console.log("SAve:", bookToSave, "Token: ", token)
     if (!token) {
       return false;
     }
@@ -120,6 +128,7 @@ const SearchBooks = () => {
         </h2>
         <Row>
           {searchedBooks.map((book) => {
+            console.log(book.bookId)
             return (
               <Col md="4">
                 <Card key={book.bookId} border='dark'>
@@ -134,6 +143,7 @@ const SearchBooks = () => {
                       <Button
                         disabled={savedBookIds?.some((savedBookId) => savedBookId === book.bookId)}
                         className='btn-block btn-info'
+            
                         onClick={() => handleSaveBook(book.bookId)}>
                         {savedBookIds?.some((savedBookId) => savedBookId === book.bookId)
                           ? 'This book has already been saved!'

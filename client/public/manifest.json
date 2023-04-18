@@ -1,6 +1,6 @@
 {
-  "short_name": "Get Outdoors Florida",
-  "name": "Get Outdoors Florida",
+  "short_name": "React App",
+  "name": "Create React App Sample",
   "icons": [
     {
       "src": "favicon.ico",

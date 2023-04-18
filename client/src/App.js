@@ -1,8 +1,9 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React, { createContext } from 'react';
 import SearchBooks from './pages/SearchBooks';
 import SavedBooks from './pages/SavedBooks';
 import Navbar from './components/Navbar';
+
+import { BrowserRouter as Router, Routes, Route}from 'react-router-dom';
 
 import {
   ApolloClient,
@@ -12,6 +13,8 @@ import {
 } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 
+
+// Construct our main GraphQL API endpoint
 const httpLink = createHttpLink({
   uri: '/graphql',
 });
@@ -35,7 +38,10 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
+const AuthContext = createContext(false);
+
 function App() {
+
   return (
     <ApolloProvider client={client}>
     <Router>
@@ -59,6 +65,8 @@ function App() {
     </Router>
     </ApolloProvider>
   );
+    
 }
 
 export default App;
+export { AuthContext };

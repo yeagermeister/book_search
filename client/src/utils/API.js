@@ -8,6 +8,7 @@ export const getMe = (token) => {
   });
 };
 
+// THis mutation works
 export const createUser = (userData) => {
   return fetch('/api/users', {
     method: 'POST',
@@ -18,6 +19,7 @@ export const createUser = (userData) => {
   });
 };
 
+// THis mutation works
 export const loginUser = (userData) => {
   return fetch('/api/users/login', {
     method: 'POST',
