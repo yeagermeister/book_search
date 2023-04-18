@@ -20,6 +20,9 @@ const resolvers = {
       return { token, user };
     },
     addSavedBook: async (_, { userId, book }, context) => {
+            // if (!context.user) {
+      //   throw new AuthenticationError('You must be logged in to delete a saved book.');
+      // }
       try {
         // Find the user by userId
         const user = await User.findById(userId);
@@ -28,21 +31,7 @@ const resolvers = {
           throw new Error('User not found'); // Handle case when user is not found
         }
 
-        // // Extract book details from input
-        // const { bookId, authors, description, image, link, title } = book;
-
-        // // Create a new book object
-        // const newBook = [
-        //   "bookId": bookId,
-        //   authors,
-        //   description,
-        //   image,
-        //   link,
-        //   title
-        // ];
-
         // Add the book to the savedBooks array of the user
-        console.log(book);
         user.savedBooks.push(book);
 
         // Save the updated user object
@@ -53,12 +42,13 @@ const resolvers = {
         throw new Error(`Failed to add book to user: ${error.message}`);
       }
     },
-    deleteSavedBook: async (parent, { bookId }, context) => {
-      if (!context.user) {
-        throw new AuthenticationError('You must be logged in to delete a saved book.');
-      }
-      const user = await User.findById(context.user.id);
-      user.savedBooks.pull({ bookId });
+    deleteSavedBook: async (parent, { userId, book }, context) => {
+      // if (!context.user) {
+      //   throw new AuthenticationError('You must be logged in to delete a saved book.');
+      // }
+      const user = await User.findById(userId);
+      console.log(userId, "test", book)
+      user.savedBooks.pull({ book });
       await user.save();
       return user.populate('savedBooks');
     },
