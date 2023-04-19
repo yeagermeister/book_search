@@ -8,12 +8,14 @@ import {
   Row
 } from 'react-bootstrap';
 
+// import { jwt , token } from 'jsonwebtoken';
 import Auth from '../utils/auth';
 import { searchGoogleBooks } from '../utils/API';
 import { saveBookIds, getSavedBookIds } from '../utils/localStorage';
 
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { ADD_BOOK } from '../utils/mutations';
+import { GET_ME } from '../utils/queries';
 
 
 const SearchBooks = () => {
@@ -24,7 +26,10 @@ const SearchBooks = () => {
 
   // create state to hold saved bookId values
   const [savedBookIds, setSavedBookIds] = useState(getSavedBookIds());
+  const [userId , updateUser] = useQuery(GET_ME);
 
+  console.log(userId)
+  const authUser = '';
   // set up useEffect hook to save `savedBookIds` list to localStorage on component unmount
   // learn more here: https://reactjs.org/docs/hooks-effect.html#effects-with-cleanup
   useEffect(() => {
@@ -49,7 +54,6 @@ const SearchBooks = () => {
       }
 
       const { items } = await response.json();
-console.log("Items",items);
       const bookData = items.map((book) => ({
         bookId: book.id,
         authors: book.volumeInfo.authors || ['No author to display'],
@@ -57,7 +61,6 @@ console.log("Items",items);
         description: book.volumeInfo.description,
         image: book.volumeInfo.imageLinks?.thumbnail || '',
       }));
-      console.log("BoookData:", bookData);
 
       setSearchedBooks(bookData);
       setSearchInput('');
@@ -74,13 +77,16 @@ console.log("Items",items);
     // get token
     const token = Auth.loggedIn() ? Auth.getToken() : null;
 
-    console.log("SAve:", bookToSave, "Token: ", token)
+
     if (!token) {
       return false;
     }
 
     try {
-      const response = await saveBook(bookToSave, token);
+      console.log("Save:", bookToSave, "Token: ", token)
+      const response = await saveBook({
+        vaariables: {book: bookToSave, aUser: authUser}
+    })
 
       if (!response.ok) {
         throw new Error('something went wrong!');
@@ -128,7 +134,6 @@ console.log("Items",items);
         </h2>
         <Row>
           {searchedBooks.map((book) => {
-            console.log(book.bookId)
             return (
               <Col md="4">
                 <Card key={book.bookId} border='dark'>
